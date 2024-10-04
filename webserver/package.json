@@ -1,0 +1,23 @@
+{
+  "name": "webserver",
+  "version": "1.0.0",
+  "description": "Primer servidor web con Node",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juan2209/backend2024.git"
+  },
+  "keywords": [
+    "webserver",
+    "http"
+  ],
+  "author": "Juan David Teodoro Pavon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Juan2209/backend2024/issues"
+  },
+  "homepage": "https://github.com/Juan2209/backend2024#readme"
+}
