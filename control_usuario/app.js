@@ -50,7 +50,7 @@ app.get("/usuarios/:id", (req, res)=>{
    res.status(200).send(usuario);
 });
 app.post("/usuarios", (req, res)=>{
-    /*validaciones de tarea
+    /*validaciones de tarea para el lunes
     1.-La informacion debe estar completa, si una de ellas no llega enviar un error (400)
     2.-El email debe ser unico (400) */
     const {nombre, apellido, email} = req.body;
