@@ -1,6 +1,7 @@
 const express = require("express")
 
 const app= express()
+app.use(express.json());
 const usuarios = [
     {
     id: 1,
@@ -48,6 +49,17 @@ app.get("/usuarios/:id", (req, res)=>{
    } 
    res.status(200).send(usuario);
 });
+app.post("/usuarios", (req, res)=>{
+    /*validaciones de tarea
+    1.-La informacion debe estar completa, si una de ellas no llega enviar un error (400)
+    2.-El email debe ser unico (400) */
+    const {nombre, apellido, email} = req.body;
+    usuarios.push({id: usuarios.length + 1, nombre, apellido, email});
+    //console.log(req.body)
+    res.status(201).send("El usuario se agregó correctamente");
+    
+})
+
 
 app.listen(3000, ()=>{
     console.log("Servidor corriendo en http://localhost:3000");
