@@ -10,3 +10,12 @@ Content-Type: application/json
     "apellido": "Teodoro San Juan",
     "email": "cristino@gmail.com"
 }
+###
+PUT http://localhost:3000/usuarios/2
+Content-Type: application/json
+
+{
+    "nombre": "Cristino",
+    "apellido": "Teodoro San Juan",
+    "email": "cristino@gmail.com"
+}

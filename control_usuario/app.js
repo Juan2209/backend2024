@@ -49,10 +49,20 @@ app.get("/usuarios/:id", (req, res)=>{
    } 
    res.status(200).send(usuario);
 });
+//metodo para agregar y validar
 app.post("/usuarios", (req, res)=>{
     /*validaciones de tarea para el lunes
     1.-La informacion debe estar completa, si una de ellas no llega enviar un error (400)
-    2.-El email debe ser unico (400) */
+    if(!nombre || !apellido || !email){
+    res.status(400).send({ error: "Todos los campos son requeridos" });
+    return;
+    }
+    2.-El email debe ser unico (400) 
+    if(usuarios.find((usuario) => usuario.email === email)){
+    res.status(400).send({ error: "El email ya está en uso" });
+    return;
+    }
+    */
     const {nombre, apellido, email} = req.body;
     if (!nombre || nombre.trim() === '') {
         return res.status(400).send({ error: "Nombre es un campo obligatorio" });
@@ -74,8 +84,39 @@ app.post("/usuarios", (req, res)=>{
     res.status(201).send("El usuario se agregó correctamente");
     
 })
+//metodo para actualizar (sustitucion completa)
+//en el put debes de decirle el parametro
+app.put("/usuarios/:id", (req, res) =>{
+    const {nombre, apellido, email} = req.body; 
+    const id = +req.params.id;
+    if(!nombre || !apellido || !email){
+        res.status(400).send({ error: "Todos los campos son requeridos" });
+        return;
+        }
+        if(isNaN(id)){
+            res.status(400).send({error:"El id debe ser un numero"});
+            return;
+        };
+       const usuario = usuarios.find((usuario)=>usuario.id === +id);
+       if(!usuario){
+        res.status(404).send({Error: `El usuario con id ${id} no existe`});
+        return;
+       }; 
 
+    usuarios.forEach((usuario) => {
+        if(usuario.id === +req.params.id){
+            usuario.nombre = nombre;
+            usuario.apellido = apellido; 
+            usuario.email = email;
+        }
+    })
+    res.status(200).send("El usuario se actualizó correctamente");
+});
+//TAREA DE VALIDACION: solamente me deje actualizar el correo siempre y cuando no exista en otro usuario
+//solo modfica una parte de la informacion del usuario
+app.patch("/usuarios/:id", (req, res) =>{
 
+});
 app.listen(3000, ()=>{
     console.log("Servidor corriendo en http://localhost:3000");
 });
