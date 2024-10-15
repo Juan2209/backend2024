@@ -6,7 +6,7 @@ POST http://localhost:3000/usuarios/
 Content-Type: application/json
 
 {
-    "nombre": "Juan David",
-    "apellido": "Teodoro Pavon",
-    "email": "teodoropavonjuan@gmail.com"
+    "nombre": "Cristino",
+    "apellido": "Teodoro San Juan",
+    "email": "cristino@gmail.com"
 }
