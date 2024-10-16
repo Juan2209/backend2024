@@ -102,7 +102,10 @@ app.put("/usuarios/:id", (req, res) =>{
         res.status(404).send({Error: `El usuario con id ${id} no existe`});
         return;
        }; 
-
+       const emailExists = usuarios.some(usuario => usuario.email === email);
+       if (emailExists) {
+           return res.status(400).send({ error: "El email ya está en uso por lo tanto no se puede actualizar el usuario" });
+       }   
     usuarios.forEach((usuario) => {
         if(usuario.id === +req.params.id){
             usuario.nombre = nombre;
