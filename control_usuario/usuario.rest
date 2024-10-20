@@ -19,3 +19,13 @@ Content-Type: application/json
     "apellido": "Teodoro Pavon",
     "email": "teodoropavonjuan@gmail.com"
 }
+###
+PATCH http://localhost:3000/usuarios/1
+content-type: application/json
+
+{
+  "nombre": "Carlos"
+}
+
+###
+DELETE http://localhost:3000/usuarios/1
