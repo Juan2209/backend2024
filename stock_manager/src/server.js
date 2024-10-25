@@ -6,8 +6,13 @@ class Server {
     constructor() {
         this.app = express();
         this.port = 3000;
-        this.app.use(express.json());
+        this.middlewares();
+        //this.app.use(express.json());//metodo de express, intercepta la solicitud antes del backend, identificar dento del paquete tiene informacion del paquete json
         this.routes();
+    }
+
+    middlewares(){
+        this.app.use(express.json());
     }
 
     routes(){

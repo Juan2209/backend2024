@@ -1,5 +1,28 @@
 const {request, response} = require ('express');
-const getMessage = (req = request, res= response) => {
-    res.send('Hello from the users controller!');
+
+const users = [
+    {id: 1, name: 'Jhon Doe'},
+    {id: 2, name: 'Jane Doe'},
+    {id: 3, name: 'Bob Smith'},
+];
+
+const getAll = (req = request, res= response) => {
+    res.send(users);
 }
-module.exports = {getMessage}
+
+const getById = (req = request, res= response) =>{
+    const {id} = req.params;
+    if(isNaN(id)){
+        res.status(400).send('Invalid ID');
+        return;
+    }
+    const user = users.find(user => user.id === +id);
+
+    if(!user){
+        res.status(404).send('User not found')
+        return;
+    }
+    res.send(user);
+}
+//tarea: agregar los endpoint de agregar, editar y eliminar un usuario
+module.exports = {getAll, getById}
