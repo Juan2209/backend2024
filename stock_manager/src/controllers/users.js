@@ -24,13 +24,20 @@ const getById = (req = request, res= response) =>{
     }
     res.send(user);
 }
+//agregar un usuario
 const create = (req = request, res = response) => {
     const { name } = req.body;
 
-    if (!name || name.trim() === '') {
+    if (!name) {
         res.status(400).send('Name is required');
         return;
     }
+
+    //const user = user.find(user => user.name === name);
+
+    //if(user){
+    //    res.status(409).send('User already exits');
+    //}
 
     const newUser = {
         id: users.length + 1,
