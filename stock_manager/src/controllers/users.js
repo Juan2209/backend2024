@@ -1,21 +1,22 @@
 const {request, response} = require ('express');
 const pool = require('../../db/connection');
+const { usersQueries } = require('../models/users');
 
-const users = [
-    {id: 1, name: 'Jhon Doe'},
-    {id: 2, name: 'Jane Doe'},
-    {id: 3, name: 'Bob Smith'},
-];
+//const users = [
+//    {id: 1, name: 'Jhon Doe'},
+//    {id: 2, name: 'Jane Doe'},
+//    {id: 3, name: 'Bob Smith'},
+//];
 
-const getAll = async (req = request, res= response) => {
+const getAllUsers = async (req = request, res= response) => {
     let conn;
     try{
         conn = await pool.getConnection();
-        const users = await conn.query('SELECT * FROM users');
+        const users = await conn.query(usersQueries.getAll);
 
         res.send(users);
     }catch (error){
-        res.status(500).send('Internal Server error');
+        res.status(500).send(error);
         return;
     }finally{
         if (conn) conn.end();
@@ -23,19 +24,35 @@ const getAll = async (req = request, res= response) => {
 
 }
 
-const getById = (req = request, res= response) =>{
+const getUserById = async (req = request, res= response) =>{
     const {id} = req.params;
     if(isNaN(id)){
         res.status(400).send('Invalid ID');
         return;
     }
-    const user = users.find(user => user.id === +id);
+    let conn;
+    try{
+        conn = await pool.getConnection();
+        const user = conn.query(usersQueries.getById, [+id]);
+        
+        if(!user){
+        res.status(404).send('User not found')
+        return;
+    }
+    res.send(user);
+    }catch (error){
+        res.status(500).send(error);
+    }finally{
+        if(conn) conn.end();
+    }
+
+    //const user = users.find(user => user.id === +id);
 
     if(!user){
         res.status(404).send('User not found')
         return;
     }
-    res.send(user);
+    
 }
 //agregar un usuario
 const create = (req = request, res = response) => {
@@ -109,6 +126,6 @@ const remove = (req = request, res = response) => {
     res.status(200).send('User deleted successfully');
 }
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAllUsers, getUserById, create, update, remove };
 //tarea: agregar los endpoint de agregar, editar y eliminar un usuario
 //module.exports = {getAll, getById}
