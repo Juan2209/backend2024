@@ -1,13 +1,15 @@
 GET http://localhost:3000/users
 
 ###
-GET http://localhost:3000/users/1
+GET http://localhost:3000/users/6
 ### Crear nuevo usuario
 POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-    "name": "Alice Johnson"
+    "username": "Lizbeth",
+    "password": "8569",
+    "email" : "lizbethmendezcruz@gmail.com"
 }
 
 ### Actualizar usuario

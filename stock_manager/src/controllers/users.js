@@ -33,9 +33,9 @@ const getUserById = async (req = request, res= response) =>{
     let conn;
     try{
         conn = await pool.getConnection();
-        const user = conn.query(usersQueries.getById, [+id]);
+        const user = await conn.query(usersQueries.getById, [+id]);
         
-        if(!user){
+        if(user.length ===0){
         res.status(404).send('User not found')
         return;
     }
@@ -55,27 +55,41 @@ const getUserById = async (req = request, res= response) =>{
     
 }
 //agregar un usuario
-const create = (req = request, res = response) => {
-    const { name } = req.body;
+const CreateUser = async (req = request, res = response) => {
+    const { username, password, email } = req.body;
 
-    if (!name) {
-        res.status(400).send('Name is required');
+    if (!username || !password || !email) {
+        res.status(400).send('Bad Request. Some fields are missing');
         return;
     }
+    let conn;
+    try{
+        conn = await pool.getConnection();
+        const user = conn.query(usersQueries.getByUsername, [username]);
+        if(user.length > 0){
+            res.status(409).send('Username already exits');
+            return;
+        }
+        const newUser = await conn.query(usersQueries.create, [username, password, email]);
+        if(newUser.affectedRows ===0){
+            res.status(500).send('user could not be created');
+            return;
+        }
+        res.status(201).send("user created succefully");
+    }catch (error){
+        res.status(500).send(error);
+        return;
+    }finally{
+        if(conn) conn.end();
+    }
 
+     
     //const user = user.find(user => user.name === name);
 
     //if(user){
     //    res.status(409).send('User already exits');
     //}
 
-    const newUser = {
-        id: users.length + 1,
-        name
-    };
-
-    users.push(newUser);
-    res.status(201).send('User created successfully');
 }
 
 const update = (req = request, res = response) => {
@@ -126,6 +140,6 @@ const remove = (req = request, res = response) => {
     res.status(200).send('User deleted successfully');
 }
 
-module.exports = { getAllUsers, getUserById, create, update, remove };
+module.exports = { getAllUsers, getUserById, CreateUser, update, remove };
 //tarea: agregar los endpoint de agregar, editar y eliminar un usuario
 //module.exports = {getAll, getById}
