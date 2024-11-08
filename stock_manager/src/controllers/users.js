@@ -92,34 +92,42 @@ const CreateUser = async (req = request, res = response) => {
 
 }
 
-const update = (req = request, res = response) => {
+const updateUser = async (req = request, res = response) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { username } = req.body;
 
-    if (isNaN(id)) {
-        res.status(400).send('ID must be a number');
-        return;
+    if (isNaN(id) || !username ) {
+        Res.status(400).send("Invalid request");
+        Return;
     }
 
-    if (!name || name.trim() === '') {
-        res.status(400).send('Name is required');
-        return;
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        
+        // Verificar si el usuario existe
+        const user = await conn.query(usersQueries.getById, [+id]);
+        if (user.length === 0) {
+            res.status(404).send("not found");
+            return;
+        }
+        
+        // Actualizar usuario
+        const result = await conn.query(usersQueries.update, [username, +id]);
+        
+        if (result.affectedRows === 0) {
+            res.status(500).send("not be updated");
+            return;
+        }
+
+        res.send("User updated ");
+    } catch (error) {
+        res.status(500).send(error);
+    } finally {
+        if (conn) conn.end();
     }
+};
 
-    const userIndex = users.findIndex(user => user.id === +id);
-
-    if (userIndex === -1) {
-        res.status(404).send(`User with id ${id} not found`);
-        return;
-    }
-
-    users[userIndex] = {
-        ...users[userIndex],
-        name
-    };
-
-    res.status(200).send('User updated successfully');
-}
 
 const remove = (req = request, res = response) => {
     const { id } = req.params;
@@ -140,6 +148,6 @@ const remove = (req = request, res = response) => {
     res.status(200).send('User deleted successfully');
 }
 
-module.exports = { getAllUsers, getUserById, CreateUser, update, remove };
+module.exports = { getAllUsers, getUserById, CreateUser, updateUser, remove };
 //tarea: agregar los endpoint de agregar, editar y eliminar un usuario
 //module.exports = {getAll, getById}
