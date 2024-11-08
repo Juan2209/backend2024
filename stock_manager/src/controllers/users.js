@@ -97,7 +97,7 @@ const updateUser = async (req = request, res = response) => {
     const { username } = req.body;
 
     if (isNaN(id) || !username ) {
-        Res.status(400).send("Invalid request");
+        res.status(400).send("Invalid request");
         Return;
     }
 
@@ -129,7 +129,7 @@ const updateUser = async (req = request, res = response) => {
 };
 
 
-const remove = (req = request, res = response) => {
+const remove = async (req = request, res = response) => {
     const { id } = req.params;
 
     if (isNaN(id)) {
@@ -137,15 +137,31 @@ const remove = (req = request, res = response) => {
         return;
     }
 
-    const userIndex = users.findIndex(user => user.id === +id);
-
-    if (userIndex === -1) {
-        res.status(404).send(`User with id ${id} not found`);
+    //const userIndex = users.findIndex(user => user.id === +id);
+    let conn;
+    try{
+        conn = await pool.getConnection();
+        const user = await conn.query(usersQueries.getById, [+id]);
+        
+        if(user.length ===0){
+        res.status(404).send('User not found')
         return;
+        }
+        const deleteduser = await conn.query (usersQueries.delete, [+id]);
+        if(deleteduser.affectedRows ===0){
+            res.status(404).send('user not found');
+            return;
+        }
+        res.send('user deleted successfully');
+
+    }catch(error){
+        res.status(500).send(error);
+    }finally{
+        if (conn) conn.end();
     }
 
-    users.splice(userIndex, 1);
-    res.status(200).send('User deleted successfully');
+
+
 }
 
 module.exports = { getAllUsers, getUserById, CreateUser, updateUser, remove };
