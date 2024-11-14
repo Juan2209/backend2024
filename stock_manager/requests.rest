@@ -7,9 +7,9 @@ POST http://localhost:3000/users/
 Content-Type: application/json
 
 {
-    "username": "Lizbeth",
-    "password": "lizbeth",
-    "email" : "lizbethmendezcruz@gmail.com"
+    "username": "Jaqueline",
+    "password": "abcjuan",
+    "email" : "jaque@gmail.com"
 }
 
 ### Actualizar usuario
@@ -17,8 +17,61 @@ PUT http://localhost:3000/users/1
 Content-Type: application/json
 
 {
-    "name": "John Doe Updated"
+    "username": "Juan De Dios"
 }
 
 ### Eliminar usuario
-DELETE http://localhost:3000/users/6
+DELETE http://localhost:3000/users/3
+
+
+###
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "username": "Lizbeth",
+    "password": "lizbeth"
+}
+
+
+###
+# Obtener todos los registros de staff activos
+GET http://localhost:3000/staff
+
+###
+# Obtener un registro de staff por ID
+GET http://localhost:3000/staff/1
+
+###
+# Crear un nuevo registro de staff
+POST http://localhost:3000/staff/
+Content-Type: application/json
+
+{
+    "first_name": "Juan David",
+    "last_name": "Teodoro",
+    "birth_date": "2003-09-22",
+    "gender": "F",
+    "phone_number": "5551234567",
+    "email": "teodoropavonjuan@gmaile.com",
+    "address": "Los cobos",
+    "user_id": 4
+}
+
+###
+# Actualizar un registro de staff
+PUT http://localhost:3000/staff/4
+Content-Type: application/json
+
+{
+    "first_name": "Juan David",
+    "last_name": "Teodoro Pavon",
+    "email": "teodoropavonjuan@gmaile.com",
+    "phone_number": "2871454520",
+    "address": "Los cobos",
+    "user_id": 1
+}
+
+###
+# Eliminar un registro de staff (cambio de is_active a 0)
+DELETE http://localhost:3000/staff/1
