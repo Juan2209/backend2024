@@ -5,11 +5,6 @@ const { usersQueries } = require('../models/users');
 
 const saltRounds = 10;
 
-//const users = [
-//    {id: 1, name: 'Jhon Doe'},
-//    {id: 2, name: 'Jane Doe'},
-//    {id: 3, name: 'Bob Smith'},
-//];
 
 const getAllUsers = async (req = request, res= response) => {
     let conn;
