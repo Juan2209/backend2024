@@ -4,6 +4,8 @@ const usersQueries = {
     getByUsername: 'SELECT * FROM users WHERE username = ?',
     create: 'INSERT INTO users (username, password, email) VALUES (?,?,?)',
     update: 'UPDATE users SET username = ? WHERE id=?',
+    updatePassword: 'UPDATE users SET password = ? WHERE id = ?',
+    updateBoth: 'UPDATE users SET username = ?, password = ? WHERE id = ?',
     delete: 'UPDATE users SET is_active = 0 WHERE id = ?',
 };
 

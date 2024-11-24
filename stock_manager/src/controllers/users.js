@@ -135,11 +135,17 @@ const loginUser = async (req = request, res = response) => {
  
 const updateUser = async (req = request, res = response) => {
     const { id } = req.params;
-    const { username } = req.body;
+    const { username, password } = req.body;
 
-    if (isNaN(id) || !username ) {
-        res.status(400).send("Invalid request");
-        Return;
+    if (isNaN(id)) {
+        res.status(400).send("Invalid ID");
+        return;
+    }
+
+    // Si no se proporciona ni username ni password, no hay nada que actualizar
+    if (!username && !password) {
+        res.status(400).send("At least one field (username or password) is required for update");
+        return;
     }
 
     let conn;
@@ -149,19 +155,35 @@ const updateUser = async (req = request, res = response) => {
         // Verificar si el usuario existe
         const user = await conn.query(usersQueries.getById, [+id]);
         if (user.length === 0) {
-            res.status(404).send("not found");
+            res.status(404).send("User not found");
             return;
         }
         
-        // Actualizar usuario
-        const result = await conn.query(usersQueries.update, [username, +id]);
+        // Si hay password, encriptarlo
+        let hashedPassword;
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, saltRounds);
+        }
+
+        // Realizar la actualización según los campos proporcionados
+        let result;
+        if (username && password) {
+            // Actualizar tanto username como password
+            result = await conn.query(usersQueries.updateBoth, [username, hashedPassword, +id]);
+        } else if (password) {
+            // Actualizar solo password
+            result = await conn.query(usersQueries.updatePassword, [hashedPassword, +id]);
+        } else {
+            // Actualizar solo username
+            result = await conn.query(usersQueries.update, [username, +id]);
+        }
         
         if (result.affectedRows === 0) {
-            res.status(500).send("not be updated");
+            res.status(500).send("User could not be updated");
             return;
         }
 
-        res.send("User updated ");
+        res.send("User updated successfully");
     } catch (error) {
         res.status(500).send(error);
     } finally {
