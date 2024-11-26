@@ -1,6 +1,7 @@
 const express = require('express');
 const usersRoutes = require('./routes/users');
 const staffRoutes = require('./routes/staff');
+const suppliersRoutes = require('./routes/suppliers');
 const productsRoutes = require('./routes/products');
 
 class Server {
@@ -20,6 +21,7 @@ class Server {
         this.app.use('/users', usersRoutes);
         this.app.use('/staff', staffRoutes); // Nueva ruta para staff
         this.app.use('/products', productsRoutes); // Nueva ruta para productos
+        this.app.use('/suppliers', suppliersRoutes);
     }
 
     start(){
