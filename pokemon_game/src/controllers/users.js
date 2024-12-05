@@ -32,7 +32,7 @@ const getUserById = async (req = request, res= response) =>{
     let conn;
     try{
         conn = await pool.getConnection();
-        const user = await conn.query(userQueries.getById, [+id]);
+        const [user] = await conn.query(userQueries.getById, [+id]);
         if(!user){
             res.status(404).send('User not found')
             return;
@@ -136,28 +136,42 @@ const updateUser = async (req = request, res = response) => {
       if (conn) conn.end();
     }
   };
-const destroyUser = async (req = request, res= response) =>{
+  const destroyUser = async (req = request, res = response) => {
+    const { id } = req.params;
+  
+    if (isNaN(id)) {
+      res.status(400).send({ message: 'Invalid ID' });
+      return;
+    }
+  
     let conn;
-    try{
-    conn = await pool.getConnection();
-    const [user]=await conn.query(userQueries.getUserById, {id});
-
-    if(!user){
-        res.status(404).send({message: 'user not found'});
+  
+    try {
+      conn = await pool.getConnection();
+  
+      // Verificar si el usuario existe
+      const [user] = await conn.query(userQueries.getById, [+id]);
+      if (!user) {
+        res.status(404).send({ message: 'User not found' });
         return;
-    }
-    const deleteUser = await conn.query(userQueries.deleteUser, [id]);
-    if (deleteUser.affectedRows ===0){
-        res.status(500).send({message: 'Error deleting user'});
+      }
+  
+      // Eliminar el usuario
+      const { affectedRows } = await conn.query(userQueries.deleteUser, [id]);
+  
+      if (affectedRows === 0) {
+        res.status(500).send({ message: 'Error deleting user' });
         return;
-    }
-    }catch (error) {
-        res.status(500).send(error);
-        return;
+      }
+  
+      res.send({ message: 'User deleted successfully' });
+    } catch (error) {
+      res.status(500).send(error);
+      return;
     } finally {
-        if (conn) conn.end();
+      if (conn) conn.end();
     }
-}
+  };
 
 
 
