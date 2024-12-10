@@ -38,6 +38,7 @@ const getPokemonById = async (req = request, res = response) =>{
     res.send(pokemons);
     }catch (error){
         res.status(500).send(error);
+        return;
     }finally{
         if(conn) conn.end();
     }
@@ -45,7 +46,20 @@ const getPokemonById = async (req = request, res = response) =>{
 }
 
 const get3RandomPokemons = async (req = request, res = response) =>{
+  let conn;
+  try{
+    conn = await pool.getConnection();
+    const pokemons = await conn.query(pokemonModel.get3Random);
+    res.send(pokemons);
+    return;
 
+  }catch(err)
+{
+  res.status(500).send(err);
+
+}finally{
+  if(conn) conn.end();
+}
 }
 
 
